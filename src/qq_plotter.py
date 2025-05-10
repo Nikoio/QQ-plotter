@@ -11,12 +11,11 @@ from scipy import stats
 
 
 def qq_plot(
-    data: Union[np.ndarray, list[float]],
+    data: np.ndarray,
     dist: stats.rv_continuous = stats.norm,
     line: bool = True,
+    limits: Optional[tuple[Optional[float], Optional[float]]] = None,
     title: str = "QQ-Plot",
-    xlabel: str = "Theoretical Quantiles",
-    ylabel: str = "Sample Quantiles",
     marker_color: str = "blue",
     line_color: str = "red",
     grid: bool = True,
@@ -33,9 +32,10 @@ def qq_plot(
         data : Массив данных для анализа
         dist : Распределение из scipy.stats (по умолчанию нормальное)
         line : Отображать линию y=x
+        limits: Границы осей в формате (min, max). Примеры:
+            (-5, 5)    # Фиксированные границы
+            (None, 3)  # Автоматический минимум, максимум=3
         title : Заголовок графика
-        xlabel : Подпись оси X
-        ylabel : Подпись оси Y
         marker_color : Цвет точек
         line_color : Цвет линии
         grid : Отображать сетку
@@ -75,12 +75,17 @@ def qq_plot(
         marker="o",
         linestyle="none",
         color=marker_color,
-        alpha=0.6,
+        alpha=0.2,
         markersize=6,
         **plot_kwargs,
     )
 
-    # Построение линии
+    # Установка пределов осей
+    if limits is not None:
+        ax.set_ylim(*limits)
+        ax.set_xlim(ax.get_ylim())
+
+    # Построение линии y=x
     if line:
         min_val = min(np.nanmin(quantiles), np.nanmin(sample_sorted))
         max_val = max(np.nanmax(quantiles), np.nanmax(sample_sorted))
@@ -92,10 +97,15 @@ def qq_plot(
             linewidth=1.5,
         )
 
+        # Линия среднего
+        mean_point = data.mean()
+        print(mean_point)
+        ax.axhline(y=mean_point, color="blue", alpha=0.5)
+
     # Настройка оформления
     ax.set_title(title, fontsize=14, pad=20)
-    ax.set_xlabel(xlabel, fontsize=12)
-    ax.set_ylabel(ylabel, fontsize=12)
+    ax.set_xlabel("Теоретические значения", fontsize=12)
+    ax.set_ylabel("Эмпирические значения", fontsize=12)
 
     if grid:
         ax.grid(True, alpha=0.3, linestyle="--")

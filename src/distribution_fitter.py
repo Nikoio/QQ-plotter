@@ -27,7 +27,7 @@ def get_distribution(data, dist_type):
         }[dist_type]
 
         # Подбор или применение готовых параметров
-        fit_params = dist.fit(data)
+        fit_params = dist.fit(data, floc=0)
 
         logger.info(f"Параметры {dist_type}: {fit_params}")
         return dist(*fit_params)

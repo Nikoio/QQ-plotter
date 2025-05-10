@@ -18,6 +18,7 @@
 
 import os
 
+import numpy as np
 import pandas as pd
 import yaml
 from loguru import logger
@@ -30,10 +31,8 @@ def get_column_names(folder_path: str) -> list[str]:
 
     Args:
         folder_path: Путь к папке с файлом columns.yaml.
-
     Returns:
         Список названий колонок в порядке их следования в данных.
-
     Raises:
         FileNotFoundError: Если файл columns.yaml не найден.
         yaml.YAMLError: При ошибке парсинга YAML.
@@ -51,7 +50,7 @@ def get_column_names(folder_path: str) -> list[str]:
 
 def load_data(
     folder_path: str, year: str | int, column: str, missing_values: list[float]
-) -> pd.DataFrame:
+) -> np.ndarray:
     """Загружает и фильтрует данные из текстовых файлов.
 
     Args:
@@ -108,4 +107,6 @@ def load_data(
 
             dfs.append(df)
     data = pd.concat(dfs, ignore_index=True)
-    return data
+    data_np = data.iloc[:, 0].to_numpy()
+
+    return data_np

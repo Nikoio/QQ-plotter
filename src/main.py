@@ -25,8 +25,7 @@
     - Общие исключения с логированием в qq_plot.log.
 
 Пример использования:
-    from src.main import main
-    main()  # требует предварительной настройки конфига
+    poetry run main
 """
 
 import os.path
@@ -34,6 +33,7 @@ import os.path
 import yaml
 from dotenv import load_dotenv
 from loguru import logger
+from scipy import stats
 
 from data_loader import load_data
 from distribution_fitter import get_distribution
@@ -63,7 +63,7 @@ def main() -> None:
 
     Логи:
         Все ключевые этапы и ошибки записываются через
-        loguru в stdout и файл qq_plot.log.
+        loguru в stdout.
     """
     config_path = os.getenv("CONFIG_PATH")
     try:
@@ -79,10 +79,15 @@ def main() -> None:
             year=config["data"]["year"],
             missing_values=config["data"]["missing_values"],
         )
-        if data.empty:
+        if len(data) == 0:
             raise ValueError(
                 "Нет данных для анализа после фильтрации пропусков."
             )
+        # Пример симуляции данных
+        # data = stats.burr.rvs(
+        #     c=3.448, d=1.606, loc=0, scale=4.553, size=500000
+        # )
+        logger.info(f"Данные загружены. Размер: {len(data)}.")
 
         # 3. Подбор распределения
         distribution = get_distribution(
@@ -97,7 +102,10 @@ def main() -> None:
 
         # 4. Генерация и сохранение QQ-plot
         fig = qq_plot(
-            data=data, dist=distribution, line=config["plot"]["show_line"]
+            data=data,
+            dist=distribution,
+            line=config["plot"]["show_line"],
+            limits=config["plot"]["limits"],
         )
         save_folder = config["plot"]["output_dir"]
         save_filename = "QQ_{type}_{year}.{format}".format(
