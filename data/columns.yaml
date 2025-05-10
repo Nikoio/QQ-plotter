@@ -1,0 +1,13 @@
+column_names:
+  - Year
+  - Day
+  - Hour
+  - Minute
+  - Scalar B, nT
+  - BX, nT (GSE
+  - BY, nT (GSE)
+  - BZ, nT (GSE
+  - Flow speed, km/s
+  - Vx Velocity, km/s, GSE
+  - Vy Velocity, km/s, GSE
+  - Vz Velocity, km/s, GSE
