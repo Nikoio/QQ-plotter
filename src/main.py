@@ -30,12 +30,13 @@
 
 import os.path
 
+import numpy as np
 import yaml
 from dotenv import load_dotenv
 from loguru import logger
-from scipy import stats
 
 from data_loader import load_data
+from dist_plotter import dist_plot
 from distribution_fitter import get_distribution
 from qq_plotter import qq_plot
 
@@ -65,6 +66,7 @@ def main() -> None:
         Все ключевые этапы и ошибки записываются через
         loguru в stdout.
     """
+    logger.info("Начало работы...")
     config_path = os.getenv("CONFIG_PATH")
     try:
         # 1. Загрузка и валидация конфигурации
@@ -83,11 +85,8 @@ def main() -> None:
             raise ValueError(
                 "Нет данных для анализа после фильтрации пропусков."
             )
-        # Пример симуляции данных
-        # data = stats.burr.rvs(
-        #     c=3.448, d=1.606, loc=0, scale=4.553, size=500000
-        # )
-        logger.info(f"Данные загружены. Размер: {len(data)}.")
+        data_size = len(data)
+        logger.info(f"Данные загружены. Размер: {data_size}.")
 
         # 3. Подбор распределения
         distribution = get_distribution(
@@ -114,7 +113,58 @@ def main() -> None:
             format=config["plot"]["save_format"],
         )
         fig.savefig(os.path.join(save_folder, save_filename))
+        logger.info("QQ-график успешно сохранен.")
+
+        fig = dist_plot(
+            data=data,
+            dist=distribution,
+            limits=config["plot"]["limits"],
+        )
+        save_filename = "dist_{type}_{year}.{format}".format(
+            type=config["distribution"]["type"],
+            year=config["data"]["year"],
+            format=config["plot"]["save_format"],
+        )
+        fig.savefig(os.path.join(save_folder, save_filename))
         logger.info("График успешно сохранен.")
+
+        # 5. Симуляция данных, генерация и сохранение QQ-plot
+        logger.info("Начало симуляции данных")
+        # Симуляция данных
+        data = distribution.rvs(size=data_size)
+
+        fig = qq_plot(
+            data=data,
+            dist=distribution,
+            line=config["plot"]["show_line"],
+            limits=config["plot"]["limits"],
+        )
+        save_folder = config["plot"]["output_dir"]
+        save_filename = "QQ_{type}_{year}_sim.{format}".format(
+            type=config["distribution"]["type"],
+            year=config["data"]["year"],
+            format=config["plot"]["save_format"],
+        )
+        fig.savefig(os.path.join(save_folder, save_filename))
+        logger.info("QQ-график симуляции успешно сохранен.")
+
+        # Фильтрация данных, которые попадут на график
+        if config["plot"]["limits"][1]:
+            data = np.array(
+                [x for x in data if x < config["plot"]["limits"][1]]
+            )
+        fig = dist_plot(
+            data=data,
+            dist=distribution,
+            limits=config["plot"]["limits"],
+        )
+        save_filename = "dist_{type}_{year}_sim.{format}".format(
+            type=config["distribution"]["type"],
+            year=config["data"]["year"],
+            format=config["plot"]["save_format"],
+        )
+        fig.savefig(os.path.join(save_folder, save_filename))
+        logger.info("График симуляции успешно сохранен.")
 
     except FileNotFoundError as e:
         logger.error(f"Ошибка: {e}")

@@ -4,6 +4,7 @@
 
 from pathlib import Path
 from typing import Optional, Union
+from venv import logger
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,6 +15,7 @@ def qq_plot(
     data: np.ndarray,
     dist: stats.rv_continuous = stats.norm,
     line: bool = True,
+    n_sigma: int = 1,
     limits: Optional[tuple[Optional[float], Optional[float]]] = None,
     title: str = "QQ-Plot",
     marker_color: str = "blue",
@@ -35,6 +37,7 @@ def qq_plot(
         limits: Границы осей в формате (min, max). Примеры:
             (-5, 5)    # Фиксированные границы
             (None, 3)  # Автоматический минимум, максимум=3
+        n_sigma: число среднеквадратичных отклонений для линии разброса данных
         title : Заголовок графика
         marker_color : Цвет точек
         line_color : Цвет линии
@@ -54,6 +57,7 @@ def qq_plot(
         data = np.random.normal(size=100)
         qq_plot(data, title="Normal Distribution", save_path="plot.png")
     """
+    logger.info("Начало отрисовки QQ-графика...")
     # Конвертация и очистка данных
     sample = np.asarray(data)
     sample = sample[np.isfinite(sample)]  # Удаляем NaN и Inf
@@ -77,6 +81,7 @@ def qq_plot(
         color=marker_color,
         alpha=0.2,
         markersize=6,
+        label="Данные",
         **plot_kwargs,
     )
 
@@ -95,17 +100,84 @@ def qq_plot(
             color=line_color,
             linestyle="--",
             linewidth=1.5,
+            label="Линия y=x",
         )
 
-        # Линия среднего
+        # Линия среднего и отклонения
         mean_point = data.mean()
-        print(mean_point)
-        ax.axhline(y=mean_point, color="blue", alpha=0.5)
+        delta_from_mean = n_sigma * data.std()
+
+        # Рисуем отрезок от (x_min, y) до (x_max, y)
+        ax.plot(
+            [0, mean_point],
+            [mean_point, mean_point],
+            color="r",
+            alpha=0.5,
+            linestyle=":",
+            linewidth=1.5,
+            label=f"Среднее значение (из данных) ± {n_sigma}σ",
+        )
+        # Добавляем кастомный тик
+        ax.set_yticks(
+            [*ax.get_yticks(), mean_point]
+        )  # Добавляем к существующим тикам
+        ax.set_yticklabels(
+            [*ax.get_yticklabels()[:-1], f"{mean_point:.2f}"]
+        )  # Заменяем последний тик
+
+        # Линия разброса
+        # Рисуем отрезок для линии среднего - разброс
+        plot_point = mean_point - delta_from_mean
+        ax.plot(
+            [0, plot_point],
+            [plot_point, plot_point],
+            color="r",
+            alpha=0.3,
+            linestyle=":",
+        )
+        # Добавляем кастомный тик
+        ax.set_yticks(
+            [*ax.get_yticks(), plot_point]
+        )  # Добавляем к существующим тикам
+        ax.set_yticklabels(
+            [*ax.get_yticklabels()[:-1], f"{plot_point:.2f}"]
+        )  # Заменяем последний тик
+
+        # Рисуем отрезок для линии среднего + разброс
+        plot_point = mean_point + delta_from_mean
+        ax.plot(
+            [0, plot_point],
+            [plot_point, plot_point],
+            color="r",
+            alpha=0.3,
+            linestyle=":",
+        )
+        # Добавляем кастомный тик
+        ax.set_yticks(
+            [*ax.get_yticks(), plot_point]
+        )  # Добавляем к существующим тикам
+        ax.set_yticklabels(
+            [*ax.get_yticklabels()[:-1], f"{plot_point:.2f}"]
+        )  # Заменяем последний тик
+
+        # Заливка пространства разброса
+        x_straight = np.linspace(0, mean_point - delta_from_mean, 100)
+        x_diag = np.linspace(
+            mean_point - delta_from_mean, mean_point + delta_from_mean, 100
+        )
+        x_all = np.concat([x_straight, x_diag])
+        h_low = [mean_point - delta_from_mean for x in x_straight] + [
+            x for x in x_diag
+        ]
+        h_high = [mean_point + delta_from_mean for x in x_all]
+
+        ax.fill_between(x_all, h_low, h_high, color="r", alpha=0.1)
 
     # Настройка оформления
     ax.set_title(title, fontsize=14, pad=20)
     ax.set_xlabel("Теоретические значения", fontsize=12)
     ax.set_ylabel("Эмпирические значения", fontsize=12)
+    ax.legend()
 
     if grid:
         ax.grid(True, alpha=0.3, linestyle="--")

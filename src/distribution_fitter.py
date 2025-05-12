@@ -14,6 +14,7 @@ def get_distribution(data, dist_type):
     :param data: Данные для подбора (используется если fit_from_data=True)
     :param dist_type: Тип распределения (normal/burr/gamma/demo)
     """
+    logger.info("Начало подбора распределения...")
     try:
         # Демо-режим: фиксированное нормальное распределение
         if dist_type == "demo":
