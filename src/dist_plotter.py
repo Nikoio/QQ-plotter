@@ -16,7 +16,10 @@ def dist_plot(
 ) -> plt.Figure:
     logger.info("Начало отрисовки графика распределения...")
     fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
-
+    if limits[1]:
+        data = np.array(
+            [x for x in data if x < limits[1]]
+        )
     ax.hist(
         data,
         bins=100,
