@@ -25,7 +25,7 @@ def dist_plot(
         color="#02a01a",
         label="Histogram",
     )
-    x = np.linspace(0, max(data), 1000)
+    x = np.linspace(min(data), max(data), 1000)
     pdf_fitted = dist.pdf(x)
     ax.plot(x, pdf_fitted, color="#FF0000", label="Approximate distribution")
 
