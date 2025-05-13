@@ -1,17 +1,18 @@
 data:
   path: "./data"
   column: "Scalar B, nT"
-  year: 2015               # Конкретный год (или "all" для всех)
+  year: 1995              # Конкретный год (или "all" для всех)
   missing_values:
     - 9999.99
     - 99999.9
 
 distribution:
   type: "burr"           # demo (N(0,1)) / normal / burr / gamma
+  params_dir: "./results/params"    # Куда сохранять параметры
 
 plot:
   title: "QQ-plot для модуля ММП"
   show_line: true          # Показывать линию y=x
-  limits: [0, 20]     # Границы значений осей
+  limits: [null, null]     # Границы значений осей
   save_format: "png"       # png / pdf / svg
-  output_dir: "./results"    # Куда сохранять графики
+  output_dir: "./results/plots"    # Куда сохранять графики

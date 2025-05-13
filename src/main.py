@@ -91,7 +91,9 @@ def main() -> None:
         # 3. Подбор распределения
         distribution = get_distribution(
             data=data,
+            year=config["data"]["year"],
             dist_type=config["distribution"]["type"],
+            dist_params_dir=config["distribution"]["params_dir"]
         )
         logger.info(
             "Распределение {} успешно подобрано.".format(
@@ -149,10 +151,6 @@ def main() -> None:
         logger.info("QQ-график симуляции успешно сохранен.")
 
         # Фильтрация данных, которые попадут на график
-        if config["plot"]["limits"][1]:
-            data = np.array(
-                [x for x in data if x < config["plot"]["limits"][1]]
-            )
         fig = dist_plot(
             data=data,
             dist=distribution,
