@@ -1,7 +1,7 @@
 data:
   path: "./data"
   column: "Scalar B, nT"
-  year: 1995              # Конкретный год (или "all" для всех)
+  year: 2015              # Конкретный год (или "all" для всех)
   missing_values:
     - 9999.99
     - 99999.9
@@ -13,6 +13,6 @@ distribution:
 plot:
   title: "QQ-plot для модуля ММП"
   show_line: true          # Показывать линию y=x
-  limits: [null, null]     # Границы значений осей
+  limits: [0, 20]     # Границы значений осей
   save_format: "png"       # png / pdf / svg
   output_dir: "./results/plots"    # Куда сохранять графики

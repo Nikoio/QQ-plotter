@@ -109,7 +109,7 @@ def main() -> None:
             limits=config["plot"]["limits"],
         )
         save_folder = config["plot"]["output_dir"]
-        save_filename = "QQ_{type}_{year}.{format}".format(
+        save_filename = "{type}_{year}_QQ.{format}".format(
             type=config["distribution"]["type"],
             year=config["data"]["year"],
             format=config["plot"]["save_format"],
@@ -122,7 +122,7 @@ def main() -> None:
             dist=distribution,
             limits=config["plot"]["limits"],
         )
-        save_filename = "dist_{type}_{year}.{format}".format(
+        save_filename = "{type}_{year}_dist.{format}".format(
             type=config["distribution"]["type"],
             year=config["data"]["year"],
             format=config["plot"]["save_format"],
@@ -142,7 +142,7 @@ def main() -> None:
             limits=config["plot"]["limits"],
         )
         save_folder = config["plot"]["output_dir"]
-        save_filename = "QQ_{type}_{year}_sim.{format}".format(
+        save_filename = "{type}_{year}_QQ_sim.{format}".format(
             type=config["distribution"]["type"],
             year=config["data"]["year"],
             format=config["plot"]["save_format"],
@@ -156,7 +156,7 @@ def main() -> None:
             dist=distribution,
             limits=config["plot"]["limits"],
         )
-        save_filename = "dist_{type}_{year}_sim.{format}".format(
+        save_filename = "{type}_{year}_dist_sim.{format}".format(
             type=config["distribution"]["type"],
             year=config["data"]["year"],
             format=config["plot"]["save_format"],
