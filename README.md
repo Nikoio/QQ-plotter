@@ -1,10 +1,10 @@
-Эта программа составляет графики типа QQ-plot для аппроксимации данных магнитного поля со спутника WIND (https://ru.wikipedia.org/wiki/GGS_WIND) распределением Берра.
+Эта программа составляет графики типа QQ-plot для аппроксимации данных магнитного поля со спутника [WIND](https://ru.wikipedia.org/wiki/GGS_WIND) распределением Берра.
 
-Для запуска кода необходимы Python 3.12, данные магнитного поля, а так же менеджер пакетов Poetry (https://python-poetry.org/docs/).
+Для запуска кода необходимы Python 3.12, данные магнитного поля, а так же менеджер пакетов [Poetry](https://python-poetry.org/docs/).
 
 Инструкция по установке и запуску:
 1. Склонируйте репозиторий
-2. В папку data распакуйте данные из архива `data.zip` (https://drive.google.com/file/d/1adzXReli44Nh3T80PeEgl6JXnQPs8YeW/view?usp=sharing) (либо восстановите из https://omniweb.gsfc.nasa.gov/form/sc_merge_min1.html согласно формату `README - Формат данных.txt`)
+2. В папку data распакуйте данные из архива [`data.zip`](https://drive.google.com/file/d/1adzXReli44Nh3T80PeEgl6JXnQPs8YeW/view?usp=sharing) (либо восстановите из [базы данных NASA](https://omniweb.gsfc.nasa.gov/form/sc_merge_min1.html) согласно формату `README - Формат данных.txt`)
 3. Создайте папки`results/params` и `results/plots`, чтобы получилась следующая папочная структура (позже сделаю, чтобы само генерилось):
    ```
     .
@@ -25,11 +25,14 @@
     └── src/
         └── ...
     ```
-4. В терминале в склонированной папке выполните `poetry install`, чтобы установить необходимые библиотеки в виртуальное окружение
-5. При необходимости сконфигурируйте конфиг `config/config.yaml` (для тестового прогона все уже настроено, можно не трогать)
-6. Для запуска скрипта выполните `poetry run main`. Что произойдет:
+4. В терминале в склонированной папке выполните `poetry install`
+5. При необходимости сконфигурируйте `config/config.yaml` (для тестового прогона можно не трогать)
+6. Для запуска скрипта выполните `poetry run main`.
+
+
+Что произойдет:
    1. Из папки `data` прочитаются данные за указанный год (по дефолту 2015)
-   2. Для них выполнится аппроксимация распределением Берра (https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.burr.html)
+   2. Для них выполнится аппроксимация [распределением Берра](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.burr.html)
    3. В папке `results/params` сохранятся параметры распределения ($c$, $d$, $x_0$ (всегда равен 0), $scale$ (он делает $\dfrac{x}{scale}$ вместо $x$))
    4. В папке `results/plots` сохранятся графики:
       1. `burr_YYYY_dist.png` - гистограмма данных за YYYY год с линией аппроксимации
