@@ -4,26 +4,15 @@
 
 Инструкция по установке и запуску:
 1. Склонируйте репозиторий
-2. В папку data распакуйте данные из архива [`data.zip`](https://drive.google.com/file/d/1adzXReli44Nh3T80PeEgl6JXnQPs8YeW/view?usp=sharing) (либо восстановите из [базы данных NASA](https://omniweb.gsfc.nasa.gov/form/sc_merge_min1.html) согласно формату `README - Формат данных.txt`)
-3. Создайте папки`results/params` и `results/plots`, чтобы получилась следующая папочная структура (позже сделаю, чтобы само генерилось):
+2. В папку `data` распакуйте данные из архива [`data.zip`](https://drive.google.com/file/d/1adzXReli44Nh3T80PeEgl6JXnQPs8YeW/view?usp=sharing) (либо восстановите из [базы данных NASA](https://omniweb.gsfc.nasa.gov/form/sc_merge_min1.html) согласно формату `README - Формат данных.txt`). Результирующая структура папки `data`:
    ```
     .
-    ├── config/
-    │   └── ...
     ├── data/
     │   └── 1995.txt
     │   ├── 1996.txt
     │   ├── ...
+    │   ├── columns.yaml
     │   └── README - Формат данных.txt
-    ├── docs/
-    │   └── ...
-    ├── results/
-    │   ├── params/
-    │   │   └── ...
-    │   └── plots/
-    │       └── ...
-    └── src/
-        └── ...
     ```
 4. В терминале в склонированной папке выполните `poetry install`
 5. При необходимости сконфигурируйте `config/config.yaml` (для тестового прогона можно не трогать)
